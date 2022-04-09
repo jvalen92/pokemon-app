@@ -33,21 +33,26 @@ const getPokemon = async (id, search = false) => {
 	createPokemonCard(pokemon, search, id);
 };
 
+const getPokemonImage = (id) => (
+	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
+);
+
 function createPokemonCard(pokemon, search = false, id) {
 	const pokemonEl = document.createElement('div');
-    search === true ? pokemonEl.classList.add('pokemon', 'pokemon-found') : pokemonEl.classList.add('pokemon');
+	search === true ? pokemonEl.classList.add('pokemon', 'pokemon-found') : pokemonEl.classList.add('pokemon');
 	const poke_types = pokemon.types.map(type => type.type.name);
 	const name = pokemon.name;
-    const typeSpans =  poke_types.map(type =>`<p class="type"> ${type} </p> `).join(' ');
+	const typeSpans = poke_types.map(type => `<p class="type"> ${type} </p> `).join(' ');
+	const image = getPokemonImage(id);
 	const pokeInnerHTML = `
-        <div id="${ search === true ? 'pokemon-found' : 'pokemon'}" class="${poke_types[0]}-color" onclick="onHandleSelected(${pokemon.id})">
+        <div id="${search === true ? 'pokemon-found' : 'pokemon'}" class="${poke_types[0]}-color" onclick="onHandleSelected(${pokemon.id})">
             <div id="${pokemon.id}" class="img-container">
-                <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg" alt="${name}" />
+                <img src="${image}" alt="${name}" />
             </div>
             <div class="info">
                 <span class="number">#${pokemon.id
-                                .toString()
-                                .padStart(3, '0')}</span>
+			.toString()
+			.padStart(3, '0')}</span>
                 <h3 class="name">${name}</h3>
                 <small class="type-container"> <span class="types"> <p>Type: </p>  ${typeSpans} </span> </small>
             </div>
@@ -55,61 +60,57 @@ function createPokemonCard(pokemon, search = false, id) {
     `;
 
 	pokemonEl.innerHTML = pokeInnerHTML;
-    const container =  search === true ? search_container : poke_container; 
+	const container = search === true ? search_container : poke_container;
 	container.appendChild(pokemonEl);
 }
 
 fetchPokemons();
 
 const searchPokemon = async (event) => {
-    event.preventDefault();
-    const {value} = event.target.pokemon;
-    await getPokemon(value, true);
-    poke_container.style.display = 'none';
+	event.preventDefault();
+	const { value } = event.target.pokemon;
+	await getPokemon(value, true);
+	poke_container.style.display = 'none';
 };
 
 
 const displayAll = (event) => {
-    location.reload();
+	location.reload();
 }
-const printData = async () => {
-	const url = `https://pokeapi.co/api/v2/pokemon/${1}`;
-	const res = await fetch(url);
-	const pokemon = await res.json();
-	const moves = pokemon.moves;
-	console.log(pokemon);
-	let movesList = []
-
-	for (let index = 0; index < 4; index++) {
-		movesList.push(`<p>${moves[index].move.name}</p>`);
-	}
-	console.log('list -> ', movesList.join(''));
-}
-
-printData();
-
 
 const onHandleSelected = async (idSelected) => {
-    console.log(idSelected);
+	
 	const url = `https://pokeapi.co/api/v2/pokemon/${idSelected}`;
 	const res = await fetch(url);
 	const pokemon = await res.json();
-	const {id, moves, sprites, name} = pokemon;
+	const { id, moves, sprites, name, types } = pokemon;
+	const type = types[0].type.name;
+	const image = getPokemonImage(id)
 	console.log(pokemon);
 	let movesList = [];
-	for (let index = 0; index < 6; index++) {
-		movesList.push(`<p class="moves-item">${moves[index].move.name}</p>`);
-	};
-	createPokemonModal(name, sprites.front_default, movesList);
-    
+	const source = moves.length <= 6 ? moves : moves.slice(0, 5);
+	movesList = source.map(({ move }) => {
+		return `<p class="moves-item">${move.name}</p>`
+	});
+
+	createPokemonModal(name, image, movesList, type);
+
 }
-const createPokemonModal = (name, image, movesList) => {
-	const modalElement = document.createElement("div");
+const createPokemonModal = (name, image, movesList, type) => {
 	const modalInfo = `
-		<div class="modal">
+		<style>
+			.modal-container {
+				width: 100%;
+				display: flex;
+				justify-content: center;
+			}
+		</style>
+		<div class="modal ${type}-color">
 			<h1>${name}-moves</h1>
 			<div class="modal-info">
-				<img src="${image}" />
+			<div class="modal-img">
+				<img src="${image}" alt="${name}" />
+			</div>
 				<div class="moves">
 					${movesList.join(' ')}
 				</div>
@@ -117,12 +118,10 @@ const createPokemonModal = (name, image, movesList) => {
 			<button id="close" class="modal-btn" onClick="onHandleClose()">Close</button>
 		</div>
 	`;
-	modalElement.innerHTML = modalInfo;
-	modalContainer.appendChild(modalElement);
-	modalContainer.style.display = "flex";
+	modalContainer.innerHTML = modalInfo;
 	poke_container.style.display = "none";
 }
 
 const onHandleClose = () => {
-    location.reload();
+	location.reload();
 };
