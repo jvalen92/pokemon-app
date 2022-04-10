@@ -89,7 +89,7 @@ const createPokemonModal = async (idSelected) => {
 	});
 	const modalInfo = `
 		<style>
-			.modal-container {
+			#modal-container {
 				width: 100%;
 				display: flex;
 				justify-content: center;
