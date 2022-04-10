@@ -30,6 +30,7 @@ const getPokemon = async (id, search = false) => {
 	const url = `https://pokeapi.co/api/v2/pokemon/${id}`;
 	const res = await fetch(url);
 	const pokemon = await res.json();
+
 	createPokemonCard(pokemon, search, id);
 };
 
@@ -37,15 +38,15 @@ const getPokemonImage = (id) => (
 	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
 );
 
-function createPokemonCard(pokemon, search = false, id) {
+const createPokemonCard = async (pokemon, search = false, id) =>{
 	const pokemonEl = document.createElement('div');
 	search === true ? pokemonEl.classList.add('pokemon', 'pokemon-found') : pokemonEl.classList.add('pokemon');
 	const poke_types = pokemon.types.map(type => type.type.name);
 	const name = pokemon.name;
 	const typeSpans = poke_types.map(type => `<p class="type"> ${type} </p> `).join(' ');
-	const image = getPokemonImage(id);
+	const image = await getPokemonImage(id);
 	const pokeInnerHTML = `
-        <div id="${search === true ? 'pokemon-found' : 'pokemon'}" class="${poke_types[0]}-color" onclick="onHandleSelected(${pokemon.id})">
+        <div id="pokemon" class="${poke_types[0]}-color" onclick="onHandleSelected(${pokemon.id})">
             <div id="${pokemon.id}" class="img-container">
                 <img src="${image}" alt="${name}" />
             </div>
@@ -67,10 +68,10 @@ function createPokemonCard(pokemon, search = false, id) {
 fetchPokemons();
 
 const searchPokemon = async (event) => {
+	debugger
 	event.preventDefault();
 	const { value } = event.target.pokemon;
-	await getPokemon(value, true);
-	poke_container.style.display = 'none';
+	onHandleSelected(value);
 };
 
 
@@ -105,7 +106,7 @@ const createPokemonModal = (name, image, movesList, type) => {
 				justify-content: center;
 			}
 		</style>
-		<div class="modal ${type}-color">
+		<div class="modal ${type}-color animate__animated animate__rotateIn">
 			<h1>${name}-moves</h1>
 			<div class="modal-info">
 			<div class="modal-img">
