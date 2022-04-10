@@ -38,26 +38,26 @@ const getPokemonImage = (id) => (
 	`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${id}.svg`
 );
 
-const createPokemonCard = async (pokemon, search = false, id) =>{
+const createPokemonCard = async (pokemon, search = false, id) => {
 	const pokemonEl = document.createElement('div');
-	pokemonEl.classList.add('pokemon');
 	const poke_types = pokemon.types.map(type => type.type.name);
 	const name = pokemon.name;
 	const typeSpans = poke_types.map(type => `<p class="type"> ${type} </p> `).join(' ');
 	const image = await getPokemonImage(id);
+	pokemonEl.classList.add('pokemon', `${poke_types[0]}-color`);
+	pokemonEl.addEventListener('click', () => onHandleSelected(pokemon.id));
 	const pokeInnerHTML = `
-        <div id="pokemon" class="${poke_types[0]}-color" onclick="onHandleSelected(${pokemon.id})">
-            <div id="${pokemon.id}" class="img-container">
-                <img src="${image}" alt="${name}" />
-            </div>
-            <div class="info">
-                <span class="number">#${pokemon.id
-			.toString()
-			.padStart(3, '0')}</span>
-                <h3 class="name">${name}</h3>
-                <small class="type-container"> <span class="types"> <p>Type: </p>  ${typeSpans} </span> </small>
-            </div>
+        <div id="${pokemon.id}" class="img-container">
+            <img src="${image}" alt="${name}" />
         </div>
+        <div class="info">
+            <span class="number">
+				#${pokemon.id.toString().padStart(3, '0')}
+			</span>
+            <h3 class="name">${name}</h3>
+            <small class="type-container"> <span class="types"> <p>Type: </p>  ${typeSpans} </span> </small>
+        </div>
+
     `;
 
 	pokemonEl.innerHTML = pokeInnerHTML;

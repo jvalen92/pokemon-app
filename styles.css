@@ -74,20 +74,19 @@ header>img {
     display: none;
 }
 
-#pokemon {
+.pokemon {
     align-items: center;
     border-radius: 10%;
     border: 1px solid grey;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    margin: 10% 0 10% 0;
-    width: 100%;
+    margin: 5% 0 0 0;
     height: 40vh;
     box-shadow: 2px 2px 5px grey;
 }
 
-#pokemon:hover {
+.pokemon:hover {
     box-shadow: 2px 2px 8px #000000;
 
 }
@@ -198,15 +197,12 @@ header>img {
 }
 
 .modal-img {
-    border: 1px solid gray;
     width: 50%;
     max-width: 50%;
     max-height: 90%;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 10%;
-    background-color: whitesmoke;
 
 }
 
@@ -308,9 +304,6 @@ header>img {
 
     .pokemon {
         width: 45%;
-    }
-
-    #pokemon {
         cursor: pointer;
     }
 
@@ -358,7 +351,7 @@ header>img {
 }
 
 @media (min-height: 1000px) and (max-height:1300px) {
-    #pokemon {
+    .pokemon {
         height: 35vh;
     }
 
@@ -368,7 +361,7 @@ header>img {
 }
 
 @media (min-height: 1300px) {
-    #pokemon {
+    .pokemon {
         height: 30vh;
     }
 }
@@ -406,9 +399,6 @@ header>img {
         width: 30%;
     }
 
-    #pokemon {
-        margin: 0 0 10% 0;
-    }
 
     .number {
         padding: 1%;
@@ -425,10 +415,7 @@ header>img {
         justify-content: space-around;
         height: 40%
     }
-    .modal-img {
-       background-color: transparent;
-       border: none;
-    }
+
     .modal-img >img {
         margin: 0;
         padding: 3%;
