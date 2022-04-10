@@ -67,7 +67,7 @@ header>img {
 .poke-container {
     width: 80%;
     overflow: scroll;
-    height: 80vh;
+    height: 70vh;
 }
 
 .poke-container::-webkit-scrollbar {
@@ -318,6 +318,7 @@ header>img {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-around;
+        height: 60vh;
     }
 
     .number {

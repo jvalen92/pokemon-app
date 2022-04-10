@@ -40,7 +40,7 @@ const getPokemonImage = (id) => (
 
 const createPokemonCard = async (pokemon, search = false, id) =>{
 	const pokemonEl = document.createElement('div');
-	search === true ? pokemonEl.classList.add('pokemon', 'pokemon-found') : pokemonEl.classList.add('pokemon');
+	pokemonEl.classList.add('pokemon');
 	const poke_types = pokemon.types.map(type => type.type.name);
 	const name = pokemon.name;
 	const typeSpans = poke_types.map(type => `<p class="type"> ${type} </p> `).join(' ');
@@ -65,26 +65,20 @@ const createPokemonCard = async (pokemon, search = false, id) =>{
 	container.appendChild(pokemonEl);
 }
 
-fetchPokemons();
-
 const searchPokemon = async (event) => {
-	debugger
 	event.preventDefault();
 	const { value } = event.target.pokemon;
-	onHandleSelected(value);
+	createPokemonModal(value);
 };
 
-
-const displayAll = (event) => {
-	location.reload();
-}
-
 const onHandleSelected = async (idSelected) => {
-	
+	createPokemonModal(idSelected);
+}
+const createPokemonModal = async (idSelected) => {
 	const url = `https://pokeapi.co/api/v2/pokemon/${idSelected}`;
 	const res = await fetch(url);
 	const pokemon = await res.json();
-	const { id, moves, sprites, name, types } = pokemon;
+	const { id, moves, name, types } = pokemon;
 	const type = types[0].type.name;
 	const image = getPokemonImage(id)
 	console.log(pokemon);
@@ -93,11 +87,6 @@ const onHandleSelected = async (idSelected) => {
 	movesList = source.map(({ move }) => {
 		return `<p class="moves-item">${move.name}</p>`
 	});
-
-	createPokemonModal(name, image, movesList, type);
-
-}
-const createPokemonModal = (name, image, movesList, type) => {
 	const modalInfo = `
 		<style>
 			.modal-container {
@@ -126,3 +115,7 @@ const createPokemonModal = (name, image, movesList, type) => {
 const onHandleClose = () => {
 	location.reload();
 };
+const displayAll = (event) => {
+	location.reload();
+}
+fetchPokemons();
